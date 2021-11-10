@@ -11,14 +11,14 @@ int main(int argc, char *argv[])
   int rows_m2 = atoi(argv[3]);
   int cols_m2 = atoi(argv[4]);
 
-  Matrix matrix_a(rows_m1, cols_m1);
-  Matrix matrix_b(rows_m2, cols_m2);
-
   if (cols_m1 != rows_m2)
   {
     cout << "[ERROR] The number of columns of matrix a differs from the number of rows of matrix b [" << cols_m1 << " != " << rows_m2 << "]." << endl;
     return 0;
   }
+
+  Matrix matrix_a(rows_m1, cols_m1);
+  Matrix matrix_b(rows_m2, cols_m2);
 
   srand(time(0));
 
