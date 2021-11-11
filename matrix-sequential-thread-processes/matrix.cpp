@@ -22,6 +22,8 @@ void Matrix::save_matrix(Matrix matrix, string file_name)
   {
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
+    matrix_file << matrix.get_rows() << "|" << matrix.get_columns() << "\n";
+
     for (int i = 0; i < matrix.get_rows(); i++)
     {
       if (i < matrix.get_rows() && i > 0)
@@ -43,6 +45,9 @@ void Matrix::save_matrix(Matrix matrix, string file_name)
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
     cout << "Time for generate " << file_name << " was " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << " [ms]" << endl;
+
+    matrix_file << "\n"
+                << chrono::duration_cast<chrono::milliseconds>(end - begin).count();
   }
 
   matrix_file.close();

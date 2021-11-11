@@ -8,7 +8,10 @@ objects: matrix.o
 generator: objects generator.cpp
 	g++ -Wall -fsanitize=address generator.cpp matrix.o -o generator
 
-clean:
-	rm *.o matrix_a.txt matrix_b.txt generator
+sequencial: objects sequencial.cpp
+	g++ -Wall -fsanitize=address sequencial.cpp matrix.o -o sequencial	
 
-all: generator
+clean:
+	rm *.o matrix_a.txt matrix_b.txt sequencial_result.txt generator sequencial
+
+all: generator sequencial
