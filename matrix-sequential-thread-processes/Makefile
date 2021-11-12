@@ -3,15 +3,21 @@
 matrix.o: matrix.cpp matrix.h
 	g++ matrix.cpp -c
 
-objects: matrix.o
+reader.o: reader.cpp reader.h
+	g++ reader.cpp -c	
 
-generator: objects generator.cpp
-	g++ -Wall -fsanitize=address generator.cpp matrix.o -o generator
+objects: matrix.o reader.o
+
+writer: objects writer.cpp
+	g++ -Wall -fsanitize=address writer.cpp matrix.o reader.o -o writer
 
 sequencial: objects sequencial.cpp
-	g++ -Wall -fsanitize=address sequencial.cpp matrix.o -o sequencial	
+	g++ -Wall -fsanitize=address sequencial.cpp matrix.o reader.o -o sequencial	
+
+thread: objects thread.cpp
+	g++ -Wall -fsanitize=address thread.cpp matrix.o reader.o -o thread	
 
 clean:
-	rm *.o matrix_a.txt matrix_b.txt sequencial_result.txt generator sequencial
+	rm *.o *.txt writer sequencial thread
 
-all: generator sequencial
+all: writer sequencial thread
