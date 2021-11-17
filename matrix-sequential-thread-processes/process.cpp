@@ -3,7 +3,11 @@
 #include <string>
 #include <vector>
 #include <chrono>
-#include <thread>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <queue>
 
 #include "matrix.h"
 #include "reader.h"
@@ -12,8 +16,8 @@ using namespace std;
 
 #define M1_FILE_NAME "matrix_a.txt"
 #define M2_FILE_NAME "matrix_b.txt"
-#define THREAD_PREFIX "thread_"
-#define THREAD_FILE_NAME "thread.txt"
+#define PROCESS_PREFIX "process_"
+#define PROCESS_FILE_NAME "process.txt"
 
 #define DELIMITER " "
 
@@ -23,15 +27,15 @@ void matrix_multiplication(int rows, int cols_m1, int cols, int nthreads, vector
 {
   chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
-  fstream thread_file;
+  fstream process_file;
 
-  string file_name = THREAD_PREFIX + to_string(nthreads) + ".txt";
+  string file_name = PROCESS_PREFIX + to_string(nthreads) + ".txt";
 
-  thread_file.open(file_name, fstream::out | fstream::trunc);
+  process_file.open(file_name, fstream::out | fstream::trunc);
 
-  if (thread_file.is_open())
+  if (process_file.is_open())
   {
-    thread_file << rows << DELIMITER << cols << "\n";
+    process_file << rows << DELIMITER << cols << "\n";
 
     vector<vector<int>> matrix_m3(rows, vector<int>(cols));
 
@@ -47,7 +51,7 @@ void matrix_multiplication(int rows, int cols_m1, int cols, int nthreads, vector
     {
       for (int j = 0; j < cols; j++)
       {
-        thread_file << "c" << i << j << " " << matrix_m3[i][j] << "\n";
+        process_file << "c" << i << j << " " << matrix_m3[i][j] << "\n";
       }
     }
 
@@ -55,11 +59,11 @@ void matrix_multiplication(int rows, int cols_m1, int cols, int nthreads, vector
 
     int time = chrono::duration_cast<chrono::milliseconds>(end - begin).count();
 
-    cout << "Time for matrix multiplication thread #" << nthreads << " result was " << time << " [ms]" << endl;
+    cout << "Time for matrix multiplication process #" << nthreads << " result was " << time << " [ms]" << endl;
 
-    thread_file << time;
+    process_file << time;
 
-    thread_file.close();
+    process_file.close();
 
     time_total += time;
   }
@@ -67,7 +71,7 @@ void matrix_multiplication(int rows, int cols_m1, int cols, int nthreads, vector
 
 int main(int argc, char *argv[])
 {
-  int nthreads = atoi(argv[1]);
+  int process = atoi(argv[1]);
 
   Reader reader = Reader();
 
@@ -83,62 +87,66 @@ int main(int argc, char *argv[])
   vector<vector<int>> matrix_m1 = reader.reader_file(DELIMITER, m1, M1);
   vector<vector<int>> matrix_m2 = reader.reader_file(DELIMITER, m2, M2);
 
-  thread threads[nthreads];
+  int rows = int(m1.get_rows() / process);
 
-  int rows = int(m1.get_rows() / nthreads);
-
-  if (m1.get_rows() % nthreads != 0)
+  if (m1.get_rows() % process != 0)
   {
     rows += 1;
   }
 
-  for (int i = 0; i < nthreads; i++)
+  pid_t *pids = (int *)malloc((process) * sizeof(int));
+
+  for (int i = 0; i < process; i++)
   {
-    threads[i] = thread(matrix_multiplication, rows, m1.get_columns(), m2.get_columns(), i, matrix_m1, matrix_m2);
+    matrix_multiplication(rows, m1.get_columns(), m2.get_columns(), i, matrix_m1, matrix_m2);
+
+    pids[i] = fork();
+
+    if (pids[i] == 0)
+    {
+      exit(0);
+    }
   }
 
-  for (int i = 0; i < nthreads; i++)
-  {
-    threads[i].join();
-  }
-
-  cout << "Total time threads for matrix multiplication result was " << time_total << " [ms]" << endl;
+  wait(NULL);
+  free(pids);
+  cout << "Total time process for matrix multiplication result was " << time_total << " [ms]" << endl;
 
   int total_rows = m2.get_columns();
   int total_cols = m1.get_columns();
 
-  fstream thread_file;
-  thread_file.open(THREAD_FILE_NAME, fstream::out | fstream::trunc);
+  fstream process_file;
+  process_file.open(PROCESS_FILE_NAME, fstream::out | fstream::trunc);
 
-  thread_file << total_rows << DELIMITER << total_cols << "\n";
+  process_file << total_rows << DELIMITER << total_cols << "\n";
 
-  if (thread_file.is_open())
+  if (process_file.is_open())
   {
 
-    for (int i = 0; i < nthreads; i++)
+    for (int i = 0; i < process; i++)
     {
-      fstream child_thread_file;
-      string file_name = THREAD_PREFIX + to_string(i) + ".txt";
-      child_thread_file.open(file_name);
+      fstream child_process_file;
+      string file_name = PROCESS_PREFIX + to_string(i) + ".txt";
+      child_process_file.open(file_name);
 
       string line;
 
       int rows_counts = 0;
       int cols_counts = 0;
 
-      if (child_thread_file.is_open())
+      if (child_process_file.is_open())
       {
-        getline(child_thread_file, line);
+        getline(child_process_file, line);
 
         int total_lines = rows * m2.get_columns();
 
         for (int i = 0; i < total_lines; i++)
         {
-          getline(child_thread_file, line);
+          getline(child_process_file, line);
 
           int time = stoi(line.substr(line.find(DELIMITER) + 1));
 
-          thread_file << "c" << rows_counts << cols_counts << DELIMITER << time << "\n";
+          process_file << "c" << rows_counts << cols_counts << DELIMITER << time << "\n";
 
           if (total_cols == cols_counts)
           {
@@ -150,13 +158,11 @@ int main(int argc, char *argv[])
         }
       }
 
-      child_thread_file.close();
+      child_process_file.close();
     }
   }
 
-  thread_file << time_total;
+  process_file << time_total;
 
-  thread_file.close();
-
-  return 0;
+  process_file.close();
 }

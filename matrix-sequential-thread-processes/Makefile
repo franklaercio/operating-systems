@@ -17,7 +17,10 @@ sequencial: objects sequencial.cpp
 thread: objects thread.cpp
 	g++ -Wall -fsanitize=address thread.cpp matrix.o reader.o -o thread	
 
-clean:
-	rm *.o *.txt writer sequencial thread
+process: objects thread.cpp
+	g++ -Wall -fsanitize=address process.cpp matrix.o reader.o -o process		
 
-all: writer sequencial thread
+clean:
+	rm *.o *.txt writer sequencial thread process
+
+all: writer sequencial thread process
