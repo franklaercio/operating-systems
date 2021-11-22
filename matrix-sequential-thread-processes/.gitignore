@@ -40,3 +40,6 @@
 
 # COMPILED
 generator
+thread
+sequencial
+process

@@ -1,18 +1,15 @@
+#include <chrono>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
-#include <chrono>
+#include <sys/wait.h>
+
+#include "constants.h"
 #include "matrix.h"
 #include "reader.h"
 
 using namespace std;
-
-#define M1_FILE_NAME "matrix_a.txt"
-#define M2_FILE_NAME "matrix_b.txt"
-#define SEQUENCIAL_FILE_NAME "sequencial.txt"
-
-#define DELIMITER " "
 
 int main()
 {
@@ -27,26 +24,46 @@ int main()
     return 0;
   }
 
+  vector<vector<int>> matrix_m1 = reader.reader_file(DELIMITER, m1, M1);
+  vector<vector<int>> matrix_m2 = reader.reader_file(DELIMITER, m2, M2);
+  vector<vector<int>> matrix_m3(m1.get_rows(), vector<int>(m2.get_columns()));
+
+  time_t rawtime;
+  struct tm *timeinfo;
+  char buffer[80];
+
+  time(&rawtime);
+  timeinfo = localtime(&rawtime);
+
+  strftime(buffer, 80, "%F%T", timeinfo);
+
+  string time_string = buffer;
+
   chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
   fstream sequencial_file;
 
-  sequencial_file.open(SEQUENCIAL_FILE_NAME, fstream::out | fstream::trunc);
+  string file_name = SEQUENCIAL_FILE_NAME + time_string + ".txt";
+
+  sequencial_file.open(file_name, fstream::out | fstream::trunc);
 
   if (sequencial_file.is_open())
   {
+    int sum = 0;
+
     sequencial_file << m1.get_rows() << DELIMITER << m2.get_columns() << "\n";
-
-    vector<vector<int>> matrix_m1 = reader.reader_file(DELIMITER, m1, M1);
-    vector<vector<int>> matrix_m2 = reader.reader_file(DELIMITER, m2, M2);
-
-    vector<vector<int>> matrix_m3(m1.get_rows(), vector<int>(m2.get_columns()));
 
     for (int i = 0; i < m1.get_rows(); i++)
     {
-      for (int j = 0; j < m1.get_columns(); j++)
+      for (int j = 0; j < m2.get_columns(); j++)
       {
-        matrix_m3[i][j] = matrix_m1[i][j] * matrix_m2[j][i];
+        for (int k = 0; k < m2.get_rows(); k++)
+        {
+          sum = sum + matrix_m1[i][k] * matrix_m2[k][j];
+        }
+
+        matrix_m3[i][j] = sum;
+        sum = 0;
       }
     }
 
@@ -66,6 +83,8 @@ int main()
   }
 
   sequencial_file.close();
+
+  sleep(1);
 
   return 0;
 }
