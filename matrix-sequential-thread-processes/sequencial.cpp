@@ -28,6 +28,8 @@ int main()
   vector<vector<int>> matrix_m2 = reader.reader_file(DELIMITER, m2, M2);
   vector<vector<int>> matrix_m3(m1.get_rows(), vector<int>(m2.get_columns()));
 
+  chrono::steady_clock::time_point begin = chrono::steady_clock::now();
+
   time_t rawtime;
   struct tm *timeinfo;
   char buffer[80];
@@ -38,8 +40,6 @@ int main()
   strftime(buffer, 80, "%F%T", timeinfo);
 
   string time_string = buffer;
-
-  chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
   fstream sequencial_file;
 

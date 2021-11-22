@@ -22,11 +22,22 @@ vector<vector<int>> matrix_m3;
 int rows_m3, cols_m3;
 
 void matrix_multiplication(chrono::steady_clock::time_point begin,
-                           int first_line, int last_line, Matrix m2, int nthreads)
+                           int first_line, int last_line, Matrix m2, int nprocess)
 {
+  time_t rawtime;
+  struct tm *timeinfo;
+  char buffer[80];
+
+  time(&rawtime);
+  timeinfo = localtime(&rawtime);
+
+  strftime(buffer, 80, "%F%T", timeinfo);
+
+  string time_string = buffer;
+
   fstream process_file;
 
-  string file_name = PROCESS_PREFIX + to_string(nthreads) + ".txt";
+  string file_name = PROCESS_PREFIX + to_string(nprocess) + time_string + ".txt";
 
   process_file.open(file_name, fstream::out | fstream::trunc);
 
@@ -44,6 +55,11 @@ void matrix_multiplication(chrono::steady_clock::time_point begin,
 
   for (int i = first_line; i < last_line; i++)
   {
+    if (i == rows_m3)
+    {
+      break;
+    }
+
     for (int j = 0; j < m2.get_columns(); j++)
     {
       for (int k = 0; k < m2.get_rows(); k++)
@@ -58,6 +74,11 @@ void matrix_multiplication(chrono::steady_clock::time_point begin,
 
   for (int i = first_line; i < last_line; i++)
   {
+    if (i == rows_m3)
+    {
+      break;
+    }
+
     for (int j = 0; j < m2.get_columns(); j++)
     {
       process_file << "c" << i << j << " " << matrix_m3[i][j] << "\n";
@@ -67,8 +88,6 @@ void matrix_multiplication(chrono::steady_clock::time_point begin,
   chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
   int time = chrono::duration_cast<chrono::milliseconds>(end - begin).count();
-
-  cout << "Time for matrix multiplication process #" << nthreads << " result was " << time << " [ms]" << endl;
 
   process_file << time;
 
@@ -108,6 +127,19 @@ int main(int argc, char *argv[])
 
   chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
+  time_t rawtime;
+  struct tm *timeinfo;
+  char buffer[80];
+
+  time(&rawtime);
+  timeinfo = localtime(&rawtime);
+
+  strftime(buffer, 80, "%F%T", timeinfo);
+
+  string time_string = buffer;
+
+  string file_name = PROCESS_PREFIX + time_string + ".txt";
+
   pid_t *pids = (int *)malloc((process) * sizeof(int));
 
   int first_line = 0;
@@ -135,8 +167,6 @@ int main(int argc, char *argv[])
     wait(NULL);
   }
 
-  free(pids);
-
   chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
   int time_total = chrono::duration_cast<chrono::milliseconds>(end - begin).count();
@@ -144,7 +174,7 @@ int main(int argc, char *argv[])
   cout << "Total time threads for matrix multiplication result was " << time_total << " [ms]" << endl;
 
   fstream process_file;
-  process_file.open(THREAD_FILE_NAME, fstream::out | fstream::trunc);
+  process_file.open(file_name, fstream::out | fstream::trunc);
 
   process_file << rows_m3 << DELIMITER << cols_m3 << "\n";
 
@@ -165,4 +195,10 @@ int main(int argc, char *argv[])
   process_file << time_total;
 
   process_file.close();
+
+  sleep(1);
+
+  free(pids);
+
+  return 0;
 }
