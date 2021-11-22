@@ -30,46 +30,49 @@ void matrix_multiplication(chrono::steady_clock::time_point begin,
 
   process_file.open(file_name, fstream::out | fstream::trunc);
 
-  if (process_file.is_open())
+  if (!process_file.is_open())
   {
-    process_file << rows_m3 << DELIMITER << cols_m3 << "\n";
-
-    vector<vector<int>> matrix_m3(rows_m3, vector<int>(cols_m3));
-
-    int sum = 0;
-
-    for (int i = first_line; i < last_line; i++)
-    {
-      for (int j = 0; j < m2.get_columns(); j++)
-      {
-        for (int k = 0; k < m2.get_rows(); k++)
-        {
-          sum = sum + matrix_m1[i][k] * matrix_m2[k][j];
-        }
-
-        matrix_m3[i][j] = sum;
-        sum = 0;
-      }
-    }
-
-    for (int i = first_line; i < last_line; i++)
-    {
-      for (int j = 0; j < m2.get_columns(); j++)
-      {
-        process_file << "c" << i << j << " " << matrix_m3[i][j] << "\n";
-      }
-    }
-
-    chrono::steady_clock::time_point end = chrono::steady_clock::now();
-
-    int time = chrono::duration_cast<chrono::milliseconds>(end - begin).count();
-
-    cout << "Time for matrix multiplication process #" << nthreads << " result was " << time << " [ms]" << endl;
-
-    process_file << time;
-
-    process_file.close();
+    cout << "[ERROR] Unable to open file." << endl;
+    exit(-1);
   }
+
+  process_file << rows_m3 << DELIMITER << cols_m3 << "\n";
+
+  vector<vector<int>> matrix_m3(rows_m3, vector<int>(cols_m3));
+
+  int sum = 0;
+
+  for (int i = first_line; i < last_line; i++)
+  {
+    for (int j = 0; j < m2.get_columns(); j++)
+    {
+      for (int k = 0; k < m2.get_rows(); k++)
+      {
+        sum = sum + matrix_m1[i][k] * matrix_m2[k][j];
+      }
+
+      matrix_m3[i][j] = sum;
+      sum = 0;
+    }
+  }
+
+  for (int i = first_line; i < last_line; i++)
+  {
+    for (int j = 0; j < m2.get_columns(); j++)
+    {
+      process_file << "c" << i << j << " " << matrix_m3[i][j] << "\n";
+    }
+  }
+
+  chrono::steady_clock::time_point end = chrono::steady_clock::now();
+
+  int time = chrono::duration_cast<chrono::milliseconds>(end - begin).count();
+
+  cout << "Time for matrix multiplication process #" << nthreads << " result was " << time << " [ms]" << endl;
+
+  process_file << time;
+
+  process_file.close();
 }
 
 int main(int argc, char *argv[])
@@ -84,7 +87,7 @@ int main(int argc, char *argv[])
   if (m1.isEmpty() || m2.isEmpty())
   {
     cout << "[ERROR] Unable to open file, check for matrix_a.txt and matrix_b.txt files." << endl;
-    return 0;
+    return -1;
   }
 
   rows_m3 = m1.get_rows();
@@ -145,14 +148,17 @@ int main(int argc, char *argv[])
 
   process_file << rows_m3 << DELIMITER << cols_m3 << "\n";
 
-  if (process_file.is_open())
+  if (!process_file.is_open())
   {
-    for (int i = 0; i < rows_m3; i++)
+    cout << "[ERROR] Unable to open file." << endl;
+    return -1;
+  }
+
+  for (int i = 0; i < rows_m3; i++)
+  {
+    for (int j = 0; j < cols_m3; j++)
     {
-      for (int j = 0; j < cols_m3; j++)
-      {
-        process_file << "c" << i << j << " " << matrix_m3[i][j] << "\n";
-      }
+      process_file << "c" << i << j << " " << matrix_m3[i][j] << "\n";
     }
   }
 

@@ -47,40 +47,43 @@ int main()
 
   sequencial_file.open(file_name, fstream::out | fstream::trunc);
 
-  if (sequencial_file.is_open())
+  if (!sequencial_file.is_open())
   {
-    int sum = 0;
-
-    sequencial_file << m1.get_rows() << DELIMITER << m2.get_columns() << "\n";
-
-    for (int i = 0; i < m1.get_rows(); i++)
-    {
-      for (int j = 0; j < m2.get_columns(); j++)
-      {
-        for (int k = 0; k < m2.get_rows(); k++)
-        {
-          sum = sum + matrix_m1[i][k] * matrix_m2[k][j];
-        }
-
-        matrix_m3[i][j] = sum;
-        sum = 0;
-      }
-    }
-
-    for (int i = 0; i < m1.get_rows(); i++)
-    {
-      for (int j = 0; j < m2.get_columns(); j++)
-      {
-        sequencial_file << "c" << i << j << " " << matrix_m3[i][j] << "\n";
-      }
-    }
-
-    chrono::steady_clock::time_point end = chrono::steady_clock::now();
-
-    cout << "Time for matrix multiplication sequencial result was " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << " [ms]" << endl;
-
-    sequencial_file << chrono::duration_cast<chrono::milliseconds>(end - begin).count();
+    cout << "[ERROR] Unable to open file." << endl;
+    return -1;
   }
+
+  int sum = 0;
+
+  sequencial_file << m1.get_rows() << DELIMITER << m2.get_columns() << "\n";
+
+  for (int i = 0; i < m1.get_rows(); i++)
+  {
+    for (int j = 0; j < m2.get_columns(); j++)
+    {
+      for (int k = 0; k < m2.get_rows(); k++)
+      {
+        sum = sum + matrix_m1[i][k] * matrix_m2[k][j];
+      }
+
+      matrix_m3[i][j] = sum;
+      sum = 0;
+    }
+  }
+
+  for (int i = 0; i < m1.get_rows(); i++)
+  {
+    for (int j = 0; j < m2.get_columns(); j++)
+    {
+      sequencial_file << "c" << i << j << " " << matrix_m3[i][j] << "\n";
+    }
+  }
+
+  chrono::steady_clock::time_point end = chrono::steady_clock::now();
+
+  cout << "Time for matrix multiplication sequencial result was " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << " [ms]" << endl;
+
+  sequencial_file << chrono::duration_cast<chrono::milliseconds>(end - begin).count();
 
   sequencial_file.close();
 

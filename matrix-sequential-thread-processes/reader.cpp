@@ -57,21 +57,24 @@ Matrix Reader::reader_matrix(FileType file_type, string name, string delimiter)
 
   file.open(name);
 
-  if (file.is_open())
+  if (!file.is_open())
   {
-    string line;
-
-    getline(file, line);
-
-    int rows = stoi(line.substr(0, line.find(delimiter)));
-    int cols = stoi(line.substr(line.find(delimiter) + 1));
-
-    fstream sequencial_file;
-
-    matrix = Matrix(rows, cols);
-
-    file.close();
+    cout << "[ERROR] Unable to open file." << endl;
+    exit(-1);
   }
+
+  string line;
+
+  getline(file, line);
+
+  int rows = stoi(line.substr(0, line.find(delimiter)));
+  int cols = stoi(line.substr(line.find(delimiter) + 1));
+
+  fstream sequencial_file;
+
+  matrix = Matrix(rows, cols);
+
+  file.close();
 
   return matrix;
 }
