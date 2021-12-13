@@ -22,8 +22,17 @@ public slots:
 
 private slots:
     void on_pushButton_clicked();
-
     void on_pushButton_2_clicked();
+
+    void on_slider_0_sliderReleased();
+
+    void on_slider_1_sliderReleased();
+
+    void on_slider_2_sliderReleased();
+
+    void on_slider_3_sliderReleased();
+
+    void on_slider_4_sliderReleased();
 
 private:
     Ui::MainWindow *ui;
