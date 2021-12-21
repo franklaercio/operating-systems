@@ -86,35 +86,35 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_slider_0_sliderReleased()
 {
-    int vel = 200-ui->slider_0->value();
+    int vel = 160-ui->slider_0->value();
     trem1->alterar_velocidade(vel);
-    trem1->parar(vel == 200);
+    trem1->parar(vel == 160);
 }
 
 void MainWindow::on_slider_1_sliderReleased()
 {
-    int vel = 200-ui->slider_1->value();
+    int vel = 160-ui->slider_1->value();
     trem2->alterar_velocidade(vel);
-    trem2->parar(vel == 200);
+    trem2->parar(vel == 160);
 }
 
 void MainWindow::on_slider_2_sliderReleased()
 {
-    int vel = 200-ui->slider_2->value();
+    int vel = 160-ui->slider_2->value();
     trem3->alterar_velocidade(vel);
-    trem3->parar(vel == 200);
+    trem3->parar(vel == 160);
 }
 
 void MainWindow::on_slider_3_sliderReleased()
 {
-    int vel = 200-ui->slider_3->value();
+    int vel = 160-ui->slider_3->value();
     trem4->alterar_velocidade(vel);
-    trem4->parar(vel == 200);
+    trem4->parar(vel == 160);
 }
 
 void MainWindow::on_slider_4_sliderReleased()
 {
-    int vel = 200-ui->slider_4->value();
+    int vel = 160-ui->slider_4->value();
     trem5->alterar_velocidade(vel);
-    trem5->parar(vel == 200);
+    trem5->parar(vel == 160);
 }

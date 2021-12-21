@@ -120,7 +120,7 @@
      <string notr="true">QSlider { background: pink}</string>
     </property>
     <property name="maximum">
-     <number>200</number>
+     <number>160</number>
     </property>
     <property name="value">
      <number>100</number>
@@ -142,7 +142,7 @@
      <string notr="true">QSlider { background: red}</string>
     </property>
     <property name="maximum">
-     <number>200</number>
+     <number>160</number>
     </property>
     <property name="value">
      <number>100</number>
@@ -164,7 +164,7 @@
      <string notr="true">QSlider { background: green}</string>
     </property>
     <property name="maximum">
-     <number>200</number>
+     <number>160</number>
     </property>
     <property name="pageStep">
      <number>10</number>
@@ -189,7 +189,7 @@
      <string notr="true">QSlider { background: orange}</string>
     </property>
     <property name="maximum">
-     <number>200</number>
+     <number>160</number>
     </property>
     <property name="value">
      <number>100</number>
@@ -211,7 +211,7 @@
      <string notr="true">QSlider { background: purple}</string>
     </property>
     <property name="maximum">
-     <number>200</number>
+     <number>160</number>
     </property>
     <property name="value">
      <number>100</number>
