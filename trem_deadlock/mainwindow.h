@@ -21,9 +21,6 @@ public slots:
     void updateInterface(int,int,int);
 
 private slots:
-    void on_pushButton_clicked();
-    void on_pushButton_2_clicked();
-
     void on_slider_0_sliderReleased();
 
     void on_slider_1_sliderReleased();

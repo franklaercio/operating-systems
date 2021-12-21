@@ -65,32 +65,6 @@
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>370</y>
-      <width>99</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Ligar</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_2">
-    <property name="geometry">
-     <rect>
-      <x>550</x>
-      <y>370</y>
-      <width>98</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Parar</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_trem2">
     <property name="geometry">
      <rect>
@@ -120,7 +94,7 @@
      <string notr="true">QSlider { background: pink}</string>
     </property>
     <property name="maximum">
-     <number>160</number>
+     <number>200</number>
     </property>
     <property name="value">
      <number>100</number>
@@ -142,7 +116,7 @@
      <string notr="true">QSlider { background: red}</string>
     </property>
     <property name="maximum">
-     <number>160</number>
+     <number>200</number>
     </property>
     <property name="value">
      <number>100</number>
@@ -164,7 +138,7 @@
      <string notr="true">QSlider { background: green}</string>
     </property>
     <property name="maximum">
-     <number>160</number>
+     <number>200</number>
     </property>
     <property name="pageStep">
      <number>10</number>
@@ -189,7 +163,7 @@
      <string notr="true">QSlider { background: orange}</string>
     </property>
     <property name="maximum">
-     <number>160</number>
+     <number>200</number>
     </property>
     <property name="value">
      <number>100</number>
@@ -211,7 +185,7 @@
      <string notr="true">QSlider { background: purple}</string>
     </property>
     <property name="maximum">
-     <number>160</number>
+     <number>200</number>
     </property>
     <property name="value">
      <number>100</number>
@@ -513,8 +487,6 @@
    <zorder>label_trilho4</zorder>
    <zorder>label_trilho3_7</zorder>
    <zorder>label_trem1</zorder>
-   <zorder>pushButton</zorder>
-   <zorder>pushButton_2</zorder>
    <zorder>label_trem2</zorder>
    <zorder>slider_0</zorder>
    <zorder>slider_1</zorder>
